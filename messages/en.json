@@ -1,0 +1,14 @@
+{
+  "Hero": {
+    "title": "Hi, I'm {name}",
+    "description": "Frontend developer creating magic with React"
+  },
+  "Nav": {
+    "projects": "Projects",
+    "contact": "Contact",
+    "experience": "Experience",
+    "about": "About",
+    "skills": "Skills",
+    "home": "Home"
+  }
+}
