@@ -30,7 +30,7 @@ export function FloatingNav() {
       { 
         scale: 1, 
         opacity: 1, 
-        duration: 0.5, 
+        duration: 1.0, 
         ease: 'back.out(1.7)',
         clearProps: "all"
       });

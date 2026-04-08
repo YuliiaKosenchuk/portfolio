@@ -22,8 +22,8 @@ export function Hero() {
       gsap.from(titleRef.current, {
         y: 50,
         opacity: 0,
-        duration: 1.2,
-        ease: "power3.out",
+        duration: 1,
+        ease: "power2.out",
       });
 
       gsap.from(subtitleRef.current, {
@@ -31,19 +31,19 @@ export function Hero() {
         opacity: 0,
         duration: 1,
         delay: 0.4,
-        ease: "power3.out",
+        ease: "power2.out",
       });
 
       gsap.fromTo(
         socialRef.current?.children || [],
-        { opacity: 0 },
+        { opacity: 0, scale: 0.9, immediateRender: true },
         {
           opacity: 1,
-          y: 0,
+          scale: 1,
           duration: 0.5,
-          stagger: 0.1,
-          delay: 1.0,
-          ease: "back.out(1.7)",
+          stagger: 0.08,
+          delay: 0.8,
+          ease: "back.out(1.4)",
           clearProps: "all",
         },
       );
@@ -93,6 +93,7 @@ export function Hero() {
         <div
           ref={socialRef}
           className="flex gap-4 justify-center mb-12 flex-wrap"
+          // style={{ opacity: 0 }}
         >
           <a
             href="/cv.pdf"

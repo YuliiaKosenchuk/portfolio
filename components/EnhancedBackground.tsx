@@ -62,6 +62,11 @@ export function EnhancedBackground() {
       { length: PARTICLE_COUNT },
       createParticle,
     );
+    
+    requestAnimationFrame(() => {
+      canvas.style.opacity = "1";
+      hexCanvas.style.opacity = "1";
+    });
 
     const animate = () => {
       rafRef.current = requestAnimationFrame(animate);
@@ -143,16 +148,6 @@ export function EnhancedBackground() {
     };
 
     animate();
-
-    // const handleResize = () => {
-    //   setSize();
-    //   // Перестворюємо частинки при зміні розміру
-    //   particles = Array.from({ length: PARTICLE_COUNT }, () =>
-    //     createParticle(canvas.width, canvas.height),
-    //   );
-    // };
-
-    // window.addEventListener("resize", handleResize);
     return () => {
       cancelAnimationFrame(rafRef.current);
       // window.removeEventListener("resize", handleResize);
@@ -184,15 +179,16 @@ export function EnhancedBackground() {
     <div
       ref={containerRef}
       className="fixed inset-0 overflow-hidden pointer-events-none z-0"
+      style={{ backgroundColor: "#0a0a0f" }}
     >
       <canvas
         ref={hexCanvasRef}
-        className="absolute inset-0 w-full h-full"
+        className="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-1000"
         style={{ objectFit: "cover" }}
       />
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full"
+        className="absolute inset-0 w-full h-full opacity-0 transition-opacity duration-1000"
         style={{ objectFit: "cover" }}
       />
 

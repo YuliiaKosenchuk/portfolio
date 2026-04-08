@@ -11,5 +11,31 @@
     "about": "About",
     "skills": "Skills",
     "home": "Home"
+  },
+
+  "About": {
+    "title1": "About",
+    "title2": "Me",
+    "description1": "I’m a Frontend Developer who enjoys turning ideas into modern, interactive web experiences. I specialize in creating intuitive user interfaces and seamless user experiences that combine",
+    "description2": "aesthetics with functionality.",
+    "description3": "My expertise spans across React, TypeScript, Next.js, GSAP, Motion-animation and modern CSS frameworks. I’m constantly learning and staying up-to-date with the latest web development trends, always pushing the boundaries of what’s possible on the web.",
+    "highlights": [
+      {
+        "title": "Clean Code",
+        "description": "Writing maintainable, scalable, and well-documented code"
+      },
+      {
+        "title": "Performance",
+        "description": "Optimizing applications for speed and efficiency"
+      },
+      {
+        "title": "Innovation & Learning",
+        "description": "Always on the lookout for new technologies and approaches to enhance my skills and projects."
+      },
+        {
+          "title": "Collaboration",
+          "description": "Working effectively in agile teams and cross-functional environments."
+        }
+    ]
   }
 }

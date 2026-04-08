@@ -7,12 +7,18 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+ScrollTrigger.defaults({
+  // fastScrollEnd: true,
+  preventOverlaps: true,
+});
+
+gsap.ticker.lagSmoothing(0);
+
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
-    // 1. Ініціалізуємо Lenis
     const lenis = new Lenis({
       lerp: 0.08,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Формула плавності
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
       smoothWheel: true, // Плавний скрол коліщатком
@@ -20,7 +26,6 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       touchMultiplier: 1.5, // Швидкість для тачпадів/телефонів
     });
 
-    // Синхронізуємо Lenis із GSAP ScrollTrigger
     lenis.on("scroll", ScrollTrigger.update);
 
     const tickerFn = (time: number) => lenis.raf(time * 1000);
