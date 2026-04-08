@@ -156,9 +156,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-html {
+/* html {
   scroll-behavior: smooth;
-}
+} */
 
 /* Performance optimization for animations */
 .animate-float,

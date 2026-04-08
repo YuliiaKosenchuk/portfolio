@@ -4,167 +4,244 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
+const PARTICLE_COUNT = 80;
+const CONNECTION_DISTANCE = 160;
+const PARTICLE_COLOR = "99, 102, 241";
+const LINE_COLOR = "139, 92, 246";
+
+interface Particle {
+  x: number;
+  y: number;
+  size: number;
+  speedX: number;
+  speedY: number;
+  opacity: number;
+  pulseSpeed: number;
+  pulseOffset: number;
+}
+
+const createParticle = (width: number, height: number): Particle => ({
+  x: Math.random() * width,
+  y: Math.random() * height,
+  size: Math.random() * 2.5 + 0.5,
+  speedX: (Math.random() - 0.5) * 0.4,
+  speedY: (Math.random() - 0.5) * 0.4,
+  opacity: Math.random() * 0.6 + 0.2,
+  pulseSpeed: Math.random() * 0.02 + 0.01,
+  pulseOffset: Math.random() * Math.PI * 2,
+});
+
 export function EnhancedBackground() {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  // const [mounted, setMounted] = useState(false);
-
-  // useEffect(() => {
-  //   setMounted(true);
-  // }, []);
+  const hexCanvasRef = useRef<HTMLCanvasElement>(null);
+  const rafRef = useRef<number>(0);
+  const frameRef = useRef(0);
 
   useEffect(() => {
-    // if (!mounted) return;
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const hexCanvas = hexCanvasRef.current;
+    if (!canvas || !hexCanvas) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    const ctx = canvas.getContext("2d", { alpha: true });
+    const hexCtx = hexCanvas.getContext("2d", { alpha: true });
+    if (!ctx || !hexCtx) return;
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const setSize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      hexCanvas.width = window.innerWidth;
+      hexCanvas.height = window.innerHeight;
 
-    const particles: Array<{
-      x: number;
-      y: number;
-      size: number;
-      speedX: number;
-      speedY: number;
-      opacity: number;
-    }> = [];
+      // Сітка малюється один раз при зміні розміру
+      hexCtx.clearRect(0, 0, hexCanvas.width, hexCanvas.height);
+      drawHexGrid(hexCtx, hexCanvas.width, hexCanvas.height);
+    };
+    setSize();
 
-    // Create particles
-    for (let i = 0; i < 50; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: Math.random() * 2 + 1,
-        speedX: (Math.random() - 0.5) * 0.5,
-        speedY: (Math.random() - 0.5) * 0.5,
-        opacity: Math.random() * 0.5 + 0.2,
-      });
-    }
+    let particles: Particle[] = Array.from({ length: PARTICLE_COUNT }, () =>
+      createParticle(canvas.width, canvas.height),
+    );
 
-    function animate() {
-      if (!ctx || !canvas) return;
+    const animate = () => {
+      rafRef.current = requestAnimationFrame(animate);
+      frameRef.current++;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      particles.forEach((particle) => {
-        // Update position
-        particle.x += particle.speedX;
-        particle.y += particle.speedY;
+      // ── Оновлення та малювання частинок ──────────────
+      particles.forEach((p) => {
+        p.x += p.speedX;
+        p.y += p.speedY;
 
-        // Wrap around edges
-        if (particle.x < 0) particle.x = canvas.width;
-        if (particle.x > canvas.width) particle.x = 0;
-        if (particle.y < 0) particle.y = canvas.height;
-        if (particle.y > canvas.height) particle.y = 0;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
 
-        // Draw particle
+        // Пульсація розміру
+        const pulse = Math.sin(frameRef.current * p.pulseSpeed + p.pulseOffset);
+        const currentSize = p.size + pulse * 0.5;
+        const currentOpacity = p.opacity + pulse * 0.15;
+
+        // Glow ефект для великих частинок
+        if (p.size > 1.8) {
+          ctx.beginPath();
+          const glow = ctx.createRadialGradient(
+            p.x,
+            p.y,
+            0,
+            p.x,
+            p.y,
+            currentSize * 4,
+          );
+          glow.addColorStop(
+            0,
+            `rgba(${PARTICLE_COLOR}, ${currentOpacity * 0.4})`,
+          );
+          glow.addColorStop(1, `rgba(${PARTICLE_COLOR}, 0)`);
+          ctx.arc(p.x, p.y, currentSize * 4, 0, Math.PI * 2);
+          ctx.fillStyle = glow;
+          ctx.fill();
+        }
+
+        // Сама частинка
         ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(99, 102, 241, ${particle.opacity})`;
+        ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${PARTICLE_COLOR}, ${currentOpacity})`;
         ctx.fill();
       });
 
-      // Draw connections
-      particles.forEach((p1, i) => {
-        particles.slice(i + 1).forEach((p2) => {
+      // ── З'єднуючі лінії — кожен 2-й кадр для оптимізації ──
+
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const p1 = particles[i];
+          const p2 = particles[j];
           const dx = p1.x - p2.x;
           const dy = p1.y - p2.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+          const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < 150) {
+          if (dist < CONNECTION_DISTANCE) {
+            const alpha = (1 - dist / CONNECTION_DISTANCE) * 0.6; // ← чіткіші лінії
+
+            // Градієнтна лінія
+            const gradient = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+            gradient.addColorStop(0, `rgba(${PARTICLE_COLOR}, ${alpha})`);
+            gradient.addColorStop(0.5, `rgba(${LINE_COLOR}, ${alpha * 1.2})`);
+            gradient.addColorStop(1, `rgba(${PARTICLE_COLOR}, ${alpha})`);
+
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(99, 102, 241, ${0.1 * (1 - distance / 150)})`;
-            ctx.lineWidth = 1;
+            ctx.strokeStyle = gradient;
+            ctx.lineWidth = alpha * 1.5; // ← товщина залежить від відстані
             ctx.stroke();
           }
-        });
-      });
-
-      requestAnimationFrame(animate);
-    }
+        }
+      }
+    };
 
     animate();
 
     const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      setSize();
+      // Перестворюємо частинки при зміні розміру
+      particles = Array.from({ length: PARTICLE_COUNT }, () =>
+        createParticle(canvas.width, canvas.height),
+      );
     };
 
     window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
-
-  // useEffect(() => {
-  //   const container = containerRef.current;
-  //   if (!container) return;
-
-  //   const orbs = container.querySelectorAll(".orb");
-
-  //   orbs.forEach((orb, index) => {
-  //     gsap.to(orb, {
-  //       x: `+=${gsap.utils.random(-200, 200)}`,
-  //       y: `+=${gsap.utils.random(-200, 200)}`,
-  //       scale: gsap.utils.random(0.8, 1.3),
-  //       duration: gsap.utils.random(8, 15),
-  //       repeat: -1,
-  //       yoyo: true,
-  //       ease: "sine.inOut",
-  //       delay: index * 0.5,
-  //     });
-  //   });
-  // }, []);
 
   useGSAP(
     () => {
-      // if (!mounted) return;
-
       const orbs = containerRef.current?.querySelectorAll(".orb");
       if (!orbs) return;
 
-      orbs.forEach((orb, index) => {
+      orbs.forEach((orb, i) => {
         gsap.to(orb, {
-          x: `+=${gsap.utils.random(-200, 200)}`,
-          y: `+=${gsap.utils.random(-200, 200)}`,
-          scale: gsap.utils.random(0.8, 1.3),
-          duration: gsap.utils.random(8, 15),
+          x: `+=${gsap.utils.random(-150, 150)}`,
+          y: `+=${gsap.utils.random(-150, 150)}`,
+          scale: gsap.utils.random(0.85, 1.25),
+          duration: gsap.utils.random(10, 18),
           repeat: -1,
           yoyo: true,
           ease: "sine.inOut",
-          delay: index * 0.5,
+          delay: i * 0.8,
         });
       });
     },
     { scope: containerRef },
   );
 
-  // if (!mounted) {
-  //   return <div className="fixed inset-0 bg-[#0a0a0f]" />;
-  // }
-
   return (
     <div
       ref={containerRef}
       className="fixed inset-0 overflow-hidden pointer-events-none z-0"
     >
-      {/* Canvas for particles */}
+      <canvas ref={hexCanvasRef} className="absolute inset-0" />
       <canvas ref={canvasRef} className="absolute inset-0" />
 
-      {/* Gradient Orbs */}
-      <div className="orb absolute -top-40 -left-40 w-150 h-150 bg-linear-to-br from-indigo-600/30 to-purple-600/30 rounded-full blur-3xl"></div>
-      <div className="orb absolute top-1/4 -right-20 w-125 h-125 bg-linear-to-br from-purple-600/30 to-pink-600/30 rounded-full blur-3xl"></div>
-      <div className="orb absolute -bottom-40 left-1/4 w-175 h-175 bg-linear-to-br from-pink-600/20 to-indigo-600/20 rounded-full blur-3xl"></div>
-      <div className="orb absolute bottom-1/3 right-1/4 w-100 h-100 bg-linear-to-br from-cyan-600/25 to-blue-600/25 rounded-full blur-3xl"></div>
+      {/* Orbs */}
+      <div className="orb absolute -top-40 -left-40 w-150 h-150 bg-linear-to-br from-indigo-600/30 to-purple-600/30 rounded-full blur-3xl" />
+      <div className="orb absolute top-1/4 -right-20 w-125 h-125 bg-linear-to-br from-purple-600/30 to-pink-600/30 rounded-full blur-3xl" />
+      <div className="orb absolute -bottom-40 left-1/4 w-175 h-175 bg-linear-to-br from-pink-600/20 to-indigo-600/20 rounded-full blur-3xl" />
+      <div className="orb absolute bottom-1/3 right-1/4 w-100 h-100 bg-linear-to-br from-cyan-600/25 to-blue-600/25 rounded-full blur-3xl" />
+      {/* Новий orb */}
+      <div className="orb absolute top-1/2 left-1/2 w-80 h-80 bg-linear-to-br from-violet-600/15 to-fuchsia-600/15 rounded-full blur-3xl" />
 
-      {/* Grid overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.03)_1px,transparent_1px)] bg-size-[50px_50px] mask-[radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]"></div>
+      {/* Grid */}
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.03)_1px,transparent_1px)] bg-size-[50px_50px] mask-[radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]" />
       {/* Vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0a0a0f_100%)]"></div>
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,#0a0a0f_100%)]" />
     </div>
   );
+}
+
+
+function drawHexGrid(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+) {
+  const size = 40;
+  const h = size * Math.sqrt(3);
+  ctx.lineWidth = 0.3;
+
+  for (let row = -1; row < height / h + 1; row++) {
+    for (let col = -1; col < width / (size * 1.5) + 1; col++) {
+      const x = col * size * 1.5;
+      const y = row * h + (col % 2 === 0 ? 0 : h / 2);
+
+      // Відстань від центру для fade ефекту
+      const distX = (x - width / 2) / (width / 2);
+      const distY = (y - height / 2) / (height / 2);
+      const dist = Math.sqrt(distX * distX + distY * distY);
+      const alpha = Math.max(0, 0.06 - dist * 0.05);
+
+      if (alpha <= 0) continue;
+
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI / 3) * i - Math.PI / 6;
+        const px = x + size * 0.9 * Math.cos(angle);
+        const py = y + size * 0.9 * Math.sin(angle);
+
+        if (i === 0) {
+          ctx.moveTo(px, py);
+        } else {
+          ctx.lineTo(px, py);
+        }
+      }
+      ctx.closePath();
+      ctx.strokeStyle = `rgba(99, 102, 241, ${alpha})`;
+      ctx.stroke();
+    }
+  }
 }

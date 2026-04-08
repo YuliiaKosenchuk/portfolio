@@ -4,7 +4,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Mail, FileText, Download, ArrowDown } from "lucide-react";
+import { Mail, FileText, Download } from "lucide-react";
 import { Logo } from "./ui/Logo";
 import { useTranslations } from "next-intl";
 
@@ -235,10 +235,6 @@ export function Hero() {
             <div className="absolute -inset-0.5 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl opacity-20 blur-xl"></div>
           </a>
         </div>
-
-        {/* <div className="absolute left-1/2 -translate-x-1/2 animate-bounce">
-          <ArrowDown size={32} className="text-muted-foreground" />
-        </div> */}
       </div>
     </section>
   );
