@@ -8,6 +8,8 @@ const PARTICLE_COUNT = 80;
 const CONNECTION_DISTANCE = 160;
 const PARTICLE_COLOR = "99, 102, 241";
 const LINE_COLOR = "139, 92, 246";
+const CANVAS_WIDTH = 2560;
+const CANVAS_HEIGHT = 1440;
 
 interface Particle {
   x: number;
@@ -20,9 +22,9 @@ interface Particle {
   pulseOffset: number;
 }
 
-const createParticle = (width: number, height: number): Particle => ({
-  x: Math.random() * width,
-  y: Math.random() * height,
+const createParticle = (): Particle => ({
+  x: Math.random() * CANVAS_WIDTH,
+  y: Math.random() * CANVAS_HEIGHT,
   size: Math.random() * 2.5 + 0.5,
   speedX: (Math.random() - 0.5) * 0.4,
   speedY: (Math.random() - 0.5) * 0.4,
@@ -47,20 +49,18 @@ export function EnhancedBackground() {
     const hexCtx = hexCanvas.getContext("2d", { alpha: true });
     if (!ctx || !hexCtx) return;
 
-    const setSize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      hexCanvas.width = window.innerWidth;
-      hexCanvas.height = window.innerHeight;
+    canvas.width = CANVAS_WIDTH;
+    canvas.height = CANVAS_HEIGHT;
+    hexCanvas.width = CANVAS_WIDTH;
+    hexCanvas.height = CANVAS_HEIGHT;
 
-      // Сітка малюється один раз при зміні розміру
-      hexCtx.clearRect(0, 0, hexCanvas.width, hexCanvas.height);
-      drawHexGrid(hexCtx, hexCanvas.width, hexCanvas.height);
-    };
-    setSize();
+    // Сітка малюється рівно один раз — більше ніколи
+    drawHexGrid(hexCtx, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    let particles: Particle[] = Array.from({ length: PARTICLE_COUNT }, () =>
-      createParticle(canvas.width, canvas.height),
+    // Частинки теж не прив'язані до розміру вікна
+    const particles: Particle[] = Array.from(
+      { length: PARTICLE_COUNT },
+      createParticle,
     );
 
     const animate = () => {
@@ -74,10 +74,10 @@ export function EnhancedBackground() {
         p.x += p.speedX;
         p.y += p.speedY;
 
-        if (p.x < 0) p.x = canvas.width;
-        if (p.x > canvas.width) p.x = 0;
-        if (p.y < 0) p.y = canvas.height;
-        if (p.y > canvas.height) p.y = 0;
+        if (p.x < 0) p.x = CANVAS_WIDTH;
+        if (p.x > CANVAS_WIDTH) p.x = 0;
+        if (p.y < 0) p.y = CANVAS_HEIGHT;
+        if (p.y > CANVAS_HEIGHT) p.y = 0;
 
         // Пульсація розміру
         const pulse = Math.sin(frameRef.current * p.pulseSpeed + p.pulseOffset);
@@ -144,18 +144,18 @@ export function EnhancedBackground() {
 
     animate();
 
-    const handleResize = () => {
-      setSize();
-      // Перестворюємо частинки при зміні розміру
-      particles = Array.from({ length: PARTICLE_COUNT }, () =>
-        createParticle(canvas.width, canvas.height),
-      );
-    };
+    // const handleResize = () => {
+    //   setSize();
+    //   // Перестворюємо частинки при зміні розміру
+    //   particles = Array.from({ length: PARTICLE_COUNT }, () =>
+    //     createParticle(canvas.width, canvas.height),
+    //   );
+    // };
 
-    window.addEventListener("resize", handleResize);
+    // window.addEventListener("resize", handleResize);
     return () => {
       cancelAnimationFrame(rafRef.current);
-      window.removeEventListener("resize", handleResize);
+      // window.removeEventListener("resize", handleResize);
     };
   }, []);
 
@@ -185,8 +185,16 @@ export function EnhancedBackground() {
       ref={containerRef}
       className="fixed inset-0 overflow-hidden pointer-events-none z-0"
     >
-      <canvas ref={hexCanvasRef} className="absolute inset-0" />
-      <canvas ref={canvasRef} className="absolute inset-0" />
+      <canvas
+        ref={hexCanvasRef}
+        className="absolute inset-0 w-full h-full"
+        style={{ objectFit: "cover" }}
+      />
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full"
+        style={{ objectFit: "cover" }}
+      />
 
       {/* Orbs */}
       <div className="orb absolute -top-40 -left-40 w-150 h-150 bg-linear-to-br from-indigo-600/30 to-purple-600/30 rounded-full blur-3xl" />
@@ -203,7 +211,6 @@ export function EnhancedBackground() {
     </div>
   );
 }
-
 
 function drawHexGrid(
   ctx: CanvasRenderingContext2D,
