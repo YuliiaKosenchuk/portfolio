@@ -1,7 +1,8 @@
 {
   "Hero": {
-    "title": "Hi, I'm {name}",
-    "description": "Frontend developer creating magic with React"
+    "title": "Hi, Yuliia here!",
+    "description": "Crafting modern, animated, engaging web experiences that feel alive — powered by new technologies, built for users and businesses, and driven by passion.",
+    "viewCV": "View CV"
   },
   "Nav": {
     "projects": "Projects",

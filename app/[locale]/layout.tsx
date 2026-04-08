@@ -15,7 +15,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Yuliia Kosenchuk Portfolio",
+  title: "Kosenchuk FD",
   description:
     "Welcome to my portfolio! I am a passionate frontend developer with a strong background in creating visually stunning and user-friendly web applications. With expertise in HTML, CSS, JavaScript, and modern frameworks like React, I bring ideas to life through clean and efficient code. Explore my projects to see how I combine creativity with technical skills to deliver exceptional digital experiences.",
 };

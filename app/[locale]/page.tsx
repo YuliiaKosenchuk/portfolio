@@ -1,9 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Logo } from "@/components/ui/Logo";
-// import { FloatingNav } from "@/components/FloatingNav";
 import { LanguagePicker } from "@/components/ui/LanguagePicker";
+import { Hero } from "@/components/Hero";
+import { Footer } from "@/components/Footer";
 
 const EnhancedBackground = dynamic(
   () =>
@@ -17,11 +17,11 @@ export default function Home() {
   return (
     <div className="min-h-screen dark bg-[#0a0a0f] relative">
       <EnhancedBackground />
-      {/* <FloatingNav /> */}
       <LanguagePicker />
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <Logo />
+      <main className="flex min-h-screen flex-col items-center justify-between">
+        <Hero />
       </main>
+      <Footer/>
     </div>
   );
 }

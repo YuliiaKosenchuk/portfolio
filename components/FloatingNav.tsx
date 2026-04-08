@@ -25,7 +25,6 @@ export function FloatingNav() {
   ];
 
   useEffect(() => {
-    // Animate nav on load
    gsap.fromTo(navRef.current, 
       { scale: 0, opacity: 0 },
       { 
@@ -36,7 +35,6 @@ export function FloatingNav() {
         clearProps: "all"
       });
 
-    // Track scroll position for active section
     const handleScroll = () => {
       const sections = navItems.map(item => document.getElementById(item.section));
       const scrollPosition = window.scrollY + window.innerHeight / 2;
@@ -57,13 +55,12 @@ export function FloatingNav() {
   }, []);
 
   useEffect(() => {
-    // Animate indicator
     if (indicatorRef.current) {
       gsap.to(indicatorRef.current, {
         y: activeIndex * 56,
-        duration: 0.2,
+        duration: 0.5,
         ease: 'power3.out',
-        overwrite: true,
+        overwrite: 'auto',
       });
     }
   }, [activeIndex]);
@@ -79,7 +76,7 @@ export function FloatingNav() {
 
   return (
     <>
-      {/* Mobile Floating Button
+      {/* Mobile Floating Button */}
       <div className="fixed bottom-6 right-6 z-50 md:hidden">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
@@ -106,7 +103,7 @@ export function FloatingNav() {
             ))}
           </div>
         )}
-      </div> */}
+      </div>
 
       {/* Desktop Floating Navigation */}
       <nav
@@ -118,7 +115,7 @@ export function FloatingNav() {
           {/* Active Indicator */}
           <div
             ref={indicatorRef}
-            className="absolute left-2 w-12 h-12 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl transition-all duration-500"
+            className="absolute left-2 w-12 h-12 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl"
             style={{ top: '8px' }}
           ></div>
 
