@@ -6,6 +6,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { BookOpen, Code2, Rocket, Users } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,6 +14,7 @@ export function About() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("About");
 
@@ -33,6 +35,19 @@ export function About() {
         y: 30,
         opacity: 0,
         duration: 0.7,
+        ease: "power2.out",
+      });
+
+      // Анімація фотографії (виїжджає зліва)
+      gsap.from(imageRef.current, {
+        scrollTrigger: {
+          trigger: imageRef.current,
+          start: "top 85%",
+          ...triggerDefaults,
+        },
+        x: -50,
+        opacity: 0,
+        duration: 0.8,
         ease: "power2.out",
       });
 
@@ -105,18 +120,50 @@ export function About() {
             {t("title2")}
           </span>
         </h2>
+        <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-0 mb-20">
+          <div
+            ref={imageRef}
+            className="w-full md:w-2/5 flex justify-center group"
+          >
+            <div className="relative w-full max-w-87.5 aspect-4/5">
+              <div
+                className="absolute -inset-12 opacity-40 group-hover:opacity-70 transition-opacity duration-500 rounded-[50%]"
+                style={{
+                  background:
+                    "radial-gradient(ellipse closest-side, rgba(99,102,241,0.4) 0%, rgba(236,72,153,0.2) 60%, transparent 100%)",
+                }}
+              />
 
-        <div ref={contentRef} className="max-w-3xl mx-auto text-center mb-16">
-          <p className="text-lg md:text-xl text-gray-300 mb-6 leading-relaxed">
-            {t("description1")}
-            <span className="text-indigo-300 font-semibold">
-              {" "}
-              {t("description2")}
-            </span>
-          </p>
-          <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
-            {t("description3")}
-          </p>
+              <div className="relative w-full h-full rounded-[22px] overflow-hidden z-10">
+                <Image
+                  src="/me-1.png"
+                  alt="About me"
+                  loading="eager"
+                  fill
+                  className="object-cover object-center grayscale-20 group-hover:grayscale-0 transition-all duration-500"
+                  sizes="(max-width: 768px) 100vw, 350px"
+                />
+
+                {/* <div className="absolute bottom-0 left-0 right-[30px] h-1/5 bg-gradient-to-t from-[#0d0d14] via-[#0d0d14]/50 to-transparent pointer-events-none" /><div className="absolute bottom-0 left-0 right-[50px] h-1/6 bg-gradient-to-t from-[#0d0d14] via-[#0d0d14]/50 to-transparent pointer-events-none" /> */}
+              </div>
+            </div>
+          </div>
+
+          <div
+            ref={contentRef}
+            className="w-full lg:w-3/5 text-center md:text-left"
+          >
+            <p className="text-lg md:text-xl text-gray-300 mb-6 leading-relaxed">
+              {t("description1")}
+              <span className="text-indigo-300 font-semibold">
+                {" "}
+                {t("description2")}
+              </span>
+            </p>
+            <p className="text-lg md:text-xl text-gray-300 leading-relaxed">
+              {t("description3")}
+            </p>
+          </div>
         </div>
         <div
           ref={cardsRef}
