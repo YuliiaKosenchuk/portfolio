@@ -55,5 +55,38 @@
         "subtitle": "Bringing interfaces to life"
       }
     ]
+  },
+
+  "Contact": {
+    "title1": "Get In",
+    "title2": "Touch",
+    "subtitle": "Have a project in mind? Lets create something amazing together",
+    "form": {
+      "namePlaceholder": "Your name",
+      "nameError1": "Name is required",
+      "nameError2": "Name must be at least 2 characters long",
+      "emailPlaceholder": "Your email",
+      "emailError1": "Email is required",
+      "emailError2": "Please enter a valid email",
+       "messageError1": "Message is required",
+      "messageError2": "Message must be at least 10 characters long",
+      "messagePlaceholder": "Your message",
+      "submit": "Send Message",
+      "submitting": "Sending...",
+      "success": "Message sent successfully!",
+      "error": "An error occurred while sending your message. Please try again later."
+    },
+    "social": {
+      "email": "Email",
+      "phone": "Phone",
+      "location": "Location",
+      "locationValue": "Europe"
+    }
+  },
+
+  "Footer": {
+    "text1": "Built with",
+    "text2": "Crafted with",
+    "text3": "fueled by"
   }
 }

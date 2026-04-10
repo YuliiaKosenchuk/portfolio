@@ -7,6 +7,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
+import { useTranslations } from "next-intl";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -21,6 +22,7 @@ export function Contact() {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);
+   const t = useTranslations("Contact");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -79,21 +81,21 @@ export function Contact() {
     const errs: FormErrors = {};
 
     if (!data.name.trim()) {
-      errs.name = "Ім'я є обов'язковим";
+      errs.name = t("form.nameError1");
     } else if (data.name.trim().length < 2) {
-      errs.name = "Ім'я повинно містити щонайменше 2 символи";
+      errs.name = t("form.nameError2");
     }
 
     if (!data.email.trim()) {
-      errs.email = "Email є обов'язковим";
+      errs.email = t("form.emailError1");
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
-      errs.email = "Введіть коректний email";
+      errs.email = t("form.emailError2");
     }
 
     if (!data.message.trim()) {
-      errs.message = "Повідомлення є обов'язковим";
+      errs.message = t("form.messageError1");
     } else if (data.message.trim().length < 10) {
-      errs.message = "Повідомлення повинно містити щонайменше 10 символів";
+      errs.message = t("form.messageError2");
     }
 
     return errs;
@@ -119,7 +121,6 @@ export function Contact() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Показати всі помилки
     const allTouched = { name: true, email: true, message: true };
     setTouched(allTouched);
     const errs = validate(formData);
@@ -176,14 +177,14 @@ export function Contact() {
     },
     {
       icon: <Phone size={24} className="relative z-10" />,
-      label: "Phone",
+      label: t("social.phone"),
       value: "+48 575-379-899",
       href: "tel:+48575379899",
     },
     {
       icon: <MapPin size={24} className="relative z-10" />,
-      label: "Location",
-      value: "Europe",
+      label: t("social.location"),
+      value: t("social.locationValue"),
       href: "https://maps.google.com/?q=Rijeka,Croatia",
       target: "_blank",
     },
@@ -196,13 +197,13 @@ export function Contact() {
           ref={titleRef}
           className="text-4xl md:text-6xl text-center mb-12 text-white"
         >
-          Get In{" "}
+          {t("title1")}{" "}
           <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-pink-400">
-            Touch
+            {t("title2")}
           </span>
         </h2>
         <p className="text-center text-gray-300 text-lg mb-16 max-w-2xl mx-auto">
-          Have a project in mind? Lets create something amazing together
+          {t("subtitle")}
         </p>
 
         <div className="mx-auto flex flex-col md:flex-row gap-12 md:gap-20">
@@ -212,7 +213,7 @@ export function Contact() {
               <div className="flex flex-col">
                 <Input
                   type="text"
-                  placeholder="Your Name"
+                  placeholder={t("form.namePlaceholder")}
                   value={formData.name}
                   onChange={(e) => handleChange("name", e.target.value)}
                   onBlur={() => handleBlur("name")}
@@ -234,7 +235,7 @@ export function Contact() {
               <div className="flex flex-col">
                 <Input
                   type="email"
-                  placeholder="Your Email"
+                  placeholder={t("form.emailPlaceholder")}
                   value={formData.email}
                   onChange={(e) => handleChange("email", e.target.value)}
                   onBlur={() => handleBlur("email")}
@@ -257,7 +258,7 @@ export function Contact() {
               {/* Message */}
               <div className="flex flex-col">
                 <Textarea
-                  placeholder="Your Message"
+                  placeholder={t("form.messagePlaceholder")}
                   rows={6}
                   value={formData.message}
                   onChange={(e) => handleChange("message", e.target.value)}
@@ -287,7 +288,7 @@ export function Contact() {
                 className="w-full mt-2 rounded-2xl bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 hover:from-indigo-700 hover:via-purple-700 hover:to-pink-700 relative overflow-hidden group shadow-lg shadow-indigo-500/50 hover:shadow-indigo-500/80 transition-all hover:-translate-y-0.5 text-white border-0 disabled:opacity-70 disabled:hover:translate-y-0 disabled:hover:shadow-indigo-500/50"
               >
                 <span className="relative z-10 font-semibold text-base">
-                  {isSubmitting ? "Sending..." : "Send Message"}
+                  {isSubmitting ? t("form.submitting") : t("form.submit")}
                 </span>
                 {!isSubmitting && (
                   <div className="absolute inset-0 bg-white/20 translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
@@ -305,9 +306,9 @@ export function Contact() {
                   }`}
                 >
                   {submitStatus === "success"
-                    ? "Дякуємо! Ваше повідомлення успішно надіслано."
+                    ? t("form.success")
                     : submitStatus === "error"
-                      ? "Виникла помилка. Спробуйте ще раз пізніше."
+                      ? t("form.error")
                       : ""}
                 </p>
               </div>
@@ -327,7 +328,6 @@ export function Contact() {
                     rel={info.target ? "noopener noreferrer" : undefined}
                     className="relative flex items-center justify-center min-w-14 w-14 h-14 
                       bg-[#13131a]/80 border border-white/10 p-2 shadow-indigo-500/20 rounded-2xl 
-                      backdrop-blur-sm 
                       hover:border-indigo-400/50 hover:-translate-y-0.5 
                       transition-all duration-300 text-gray-400 hover:text-white 
                       shadow-lg hover:shadow-indigo-500/60
@@ -335,7 +335,7 @@ export function Contact() {
                   >
                     {info.icon}
                     <div className="absolute inset-0 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 opacity-0 group-hover:opacity-100 translate-y-full group-hover:translate-y-0 transition-all duration-500"></div>
-                    <div className="absolute -inset-0.5 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl opacity-20 blur-xl -z-10 transition-opacity duration-300 group-hover:opacity-40"></div>
+                    <div className="absolute -inset-0.5 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-3xl opacity-20 -z-10 transition-opacity duration-300 group-hover:opacity-40"></div>
                   </a>
 
                   <div>

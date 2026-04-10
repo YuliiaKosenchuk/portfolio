@@ -123,11 +123,11 @@ export function About() {
         <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-0 mb-20">
           <div
             ref={imageRef}
-            className="w-full md:w-2/5 flex justify-center group"
+            className="w-full md:w-2/5 flex justify-center"
           >
             <div className="relative w-full max-w-87.5 aspect-4/5">
               <div
-                className="absolute -inset-12 opacity-40 group-hover:opacity-70 transition-opacity duration-500 rounded-[50%]"
+                className="absolute -inset-12 opacity-40 rounded-[50%]"
                 style={{
                   background:
                     "radial-gradient(ellipse closest-side, rgba(99,102,241,0.4) 0%, rgba(236,72,153,0.2) 60%, transparent 100%)",
@@ -140,8 +140,9 @@ export function About() {
                   alt="About me"
                   loading="eager"
                   fill
-                  className="object-cover object-center grayscale-20 group-hover:grayscale-0 transition-all duration-500"
+                  className="object-cover object-center"
                   sizes="(max-width: 768px) 100vw, 350px"
+                  style={{ willChange: "transform" }}
                 />
 
                 {/* <div className="absolute bottom-0 left-0 right-[30px] h-1/5 bg-gradient-to-t from-[#0d0d14] via-[#0d0d14]/50 to-transparent pointer-events-none" /><div className="absolute bottom-0 left-0 right-[50px] h-1/6 bg-gradient-to-t from-[#0d0d14] via-[#0d0d14]/50 to-transparent pointer-events-none" /> */}

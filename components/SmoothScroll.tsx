@@ -8,7 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 ScrollTrigger.defaults({
-  // fastScrollEnd: true,
+  fastScrollEnd: true,
   preventOverlaps: true,
 });
 
@@ -17,7 +17,7 @@ gsap.ticker.lagSmoothing(0);
 export function SmoothScroll({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const lenis = new Lenis({
-      lerp: 0.08,
+      lerp: 0.12,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: "vertical",
       gestureOrientation: "vertical",
