@@ -68,17 +68,16 @@ export function Hero() {
       ref={heroRef}
       className="min-h-screen flex items-center justify-center relative overflow-hidden"
     >
-      <div className="container mx-auto px-4 text-center relative z-10">
+      <div className="container mx-auto px-6 text-center relative z-10 md:pr-24 xl:pr-0">
         <Logo />
 
         <h1
           ref={titleRef}
-          className="text-5xl md:text-7xl lg:text-8xl mb-6 mt-8 leading-tight text-white"
+          className="text-4xl md:text-5xl lg:text-6xl mb-6 mt-8 leading-tight text-white"
         >
           {t("title")}
-          <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400"></span>
           <br />
-          <span className="text-transparent bg-clip-text bg-linear-to-r from-pink-400 via-purple-400 to-indigo-400">
+          <span className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl text-transparent bg-clip-text bg-linear-to-r from-pink-400 via-purple-400 to-indigo-400">
             Frontend Developer
           </span>
         </h1>

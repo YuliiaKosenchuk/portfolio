@@ -29,13 +29,31 @@
         "description": "Optimizing applications for speed and efficiency"
       },
       {
-        "title": "Innovation & Learning",
+        "title": "Learning",
         "description": "Always on the lookout for new technologies and approaches to enhance my skills and projects."
       },
-        {
-          "title": "Collaboration",
-          "description": "Working effectively in agile teams and cross-functional environments."
-        }
+      {
+        "title": "Collaboration",
+        "description": "Working effectively in agile teams and cross-functional environments."
+      }
+    ]
+  },
+
+  "Skills": {
+    "title1": "Skills & ",
+    "title2": "Technologies",
+    "subtitle": "Technologies and tools I use to craft modern, interactive web applications",
+    "cards": [
+      { "title": "Core & Languages", "subtitle": "How I build websites" },
+      {
+        "title": "Ecosystem & Styling",
+        "subtitle": "Tools for modern UI"
+      },
+      { "title": "Architecture & Data", "subtitle": "Managing data & logic" },
+      {
+        "title": "Creative & Motion",
+        "subtitle": "Bringing interfaces to life"
+      }
     ]
   }
 }

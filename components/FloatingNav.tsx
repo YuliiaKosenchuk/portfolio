@@ -1,77 +1,121 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import gsap from 'gsap';
-import { Home, User, Code, Briefcase, FolderOpen, MessageSquare, X } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { useParams } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
+import {
+  Home,
+  User,
+  Code,
+  Briefcase,
+  FolderOpen,
+  MessageSquare,
+  X,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
 
 export function FloatingNav() {
   const navRef = useRef<HTMLDivElement>(null);
   const indicatorRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isExpanded, setIsExpanded] = useState(false);
-  const t = useTranslations('Nav');
+  const isScrollingRef = useRef(false);
+const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const t = useTranslations("Nav");
   const params = useParams();
   const locale = params.locale as string;
 
-  const navItems = [
-    { icon: <Home size={20} />, label: t('home'), section: 'home' },
-    { icon: <User size={20} />, label: t('about'), section: 'about' },
-    { icon: <Code size={20} />, label: t('skills'), section: 'skills' },
-    { icon: <Briefcase size={20} />, label: t('experience'), section: 'experience' },
-    { icon: <FolderOpen size={20} />, label: t('projects'), section: 'projects' },
-    { icon: <MessageSquare size={20} />, label: t('contact'), section: 'contact' },
-  ];
+ const navItems = useMemo(() => [
+    { icon: <Home size={20} />, label: t("home"), section: "home" },
+    { icon: <User size={20} />, label: t("about"), section: "about" },
+    { icon: <Code size={20} />, label: t("skills"), section: "skills" },
+    {
+      icon: <Briefcase size={20} />,
+      label: t("experience"),
+      section: "experience",
+    },
+    {
+      icon: <FolderOpen size={20} />,
+      label: t("projects"),
+      section: "projects",
+    },
+    {
+      icon: <MessageSquare size={20} />,
+      label: t("contact"),
+      section: "contact",
+    },
+  ], [t]);
 
-  useEffect(() => {
-   gsap.fromTo(navRef.current, 
-      { scale: 0, opacity: 0 },
-      { 
-        scale: 1, 
-        opacity: 1, 
-        duration: 1.0, 
-        ease: 'back.out(1.7)',
-        clearProps: "all"
-      });
+  const handleScroll = useCallback(() => {
+    if (isScrollingRef.current) return;
 
-    const handleScroll = () => {
-      const sections = navItems.map(item => document.getElementById(item.section));
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
       const scrollPosition = window.scrollY + window.innerHeight / 2;
 
-      sections.forEach((section, index) => {
+      navItems.forEach((item, index) => {
+        const section = document.getElementById(item.section);
         if (section) {
           const top = section.offsetTop;
           const bottom = top + section.offsetHeight;
           if (scrollPosition >= top && scrollPosition < bottom) {
-            setActiveIndex(index);
+            setActiveIndex((prev) => (prev !== index ? index : prev));
           }
         }
       });
-    };
+    });
+  }, [navItems]);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  useEffect(() => {
+    gsap.fromTo(
+      navRef.current,
+      { scale: 0, opacity: 0 },
+      {
+        scale: 1,
+        opacity: 1,
+        duration: 1.0,
+        ease: "back.out(1.7)",
+        clearProps: "all",
+      },
+    );
+
+    window.addEventListener("scroll", handleScroll, { passive: true }); // ← passive: true — не блокує скрол
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    };
+  }, [handleScroll]);
 
   useEffect(() => {
     if (indicatorRef.current) {
       gsap.to(indicatorRef.current, {
         y: activeIndex * 56,
         duration: 0.5,
-        ease: 'power3.out',
-        overwrite: 'auto',
+        ease: "power3.out",
+        overwrite: "auto",
       });
     }
   }, [activeIndex]);
 
+
   const scrollToSection = (section: string, index: number) => {
+    isScrollingRef.current = true;
     setActiveIndex(index);
+
     const element = document.getElementById(section);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: "smooth" });
     }
+
     setIsExpanded(false);
+
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+    scrollTimeoutRef.current = setTimeout(() => {
+      isScrollingRef.current = false;
+    }, 800);
   };
 
   return (
@@ -82,7 +126,11 @@ export function FloatingNav() {
           onClick={() => setIsExpanded(!isExpanded)}
           className="w-14 h-14 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-full flex items-center justify-center shadow-lg shadow-indigo-500/50 hover:shadow-indigo-500/80 transition-all duration-300 hover:scale-110"
         >
-          {isExpanded ? <X size={24} className="text-white" /> : <Home size={24} className="text-white" />}
+          {isExpanded ? (
+            <X size={24} className="text-white" />
+          ) : (
+            <Home size={24} className="text-white" />
+          )}
         </button>
 
         {isExpanded && (
@@ -93,8 +141,8 @@ export function FloatingNav() {
                 onClick={() => scrollToSection(item.section, index)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 ${
                   activeIndex === index
-                    ? 'bg-linear-to-r from-indigo-600 to-purple-600 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-white/5'
+                    ? "bg-linear-to-r from-indigo-600 to-purple-600 text-white"
+                    : "text-gray-400 hover:text-white hover:bg-white/5"
                 }`}
               >
                 {item.icon}
@@ -109,14 +157,14 @@ export function FloatingNav() {
       <nav
         ref={navRef}
         key={locale}
-        className="fixed top-1/2 -translate-y-1/2 right-8 z-101 hidden md:block"
+        className="fixed top-1/2 -translate-y-1/2 right-7 lg:right-9 z-101 hidden md:block"
       >
         <div className="relative bg-[#13131a]/80 backdrop-blur-xl border border-white/10 rounded-3xl p-2 shadow-2xl shadow-indigo-500/20">
           {/* Active Indicator */}
           <div
             ref={indicatorRef}
             className="absolute left-2 w-12 h-12 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl"
-            style={{ top: '8px' }}
+            style={{ top: "8px" }}
           ></div>
 
           {/* Nav Items */}
@@ -126,11 +174,13 @@ export function FloatingNav() {
                 key={`${locale}-${index}`}
                 onClick={() => scrollToSection(item.section, index)}
                 className={`group relative w-12 h-12 flex items-center justify-center rounded-2xl transition-all duration-300 ${
-                  activeIndex === index ? 'text-white' : 'text-gray-400 hover:text-white'
+                  activeIndex === index
+                    ? "text-white"
+                    : "text-gray-400 hover:text-white"
                 }`}
               >
                 <div className="relative z-10">{item.icon}</div>
-                
+
                 {/* Tooltip */}
                 <div className="absolute right-16 px-4 py-2 bg-[#13131a] border border-white/10 rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 whitespace-nowrap shadow-xl">
                   <span className="text-sm font-medium">{item.label}</span>

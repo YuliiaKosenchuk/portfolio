@@ -40,14 +40,13 @@ export function LanguagePicker() {
   }, []);
 
   const toggleLanguage = () => {
-    // Зберігаємо поточну позицію до переходу
     sessionStorage.setItem("scrollPosition", String(window.scrollY));
     const nextLocale = locale === "uk" ? "en" : "uk";
     router.replace(pathname, { locale: nextLocale });
   };
 
   return (
-    <div ref={pickerRef} className="fixed top-8 right-8 z-101">
+    <div ref={pickerRef} className="absolute md:fixed top-8 right-7 lg:right-9 z-101">
       <div
         className="relative bg-[#13131a]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-1 shadow-2xl shadow-indigo-500/10 group cursor-pointer"
         onClick={toggleLanguage}
@@ -55,7 +54,7 @@ export function LanguagePicker() {
         <div className="relative z-10 flex items-center justify-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 group-hover:bg-white/5">
           <Languages
             size={18}
-            className="text-gray-400 group-hover:text-indigo-400 transition-colors duration-300"
+            className="hidden min-[1350px]:block text-gray-400 group-hover:text-indigo-400 transition-colors duration-300"
           />
           <span className="text-sm font-semibold text-gray-300 group-hover:text-white transition-colors duration-300">
             {locale === "uk" ? "EN" : "UA"}
@@ -64,7 +63,7 @@ export function LanguagePicker() {
 
         <div className="absolute inset-0 bg-linear-to-r from-indigo-600 via-purple-600 to-pink-600 rounded-2xl opacity-0 group-hover:opacity-20 blur-md transition-opacity duration-500 -z-10"></div>
 
-        <div className="absolute right-full top-1/2 -translate-y-1/2 mr-4 px-4 py-2 bg-[#13131a] border border-white/10 rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 whitespace-nowrap shadow-xl">
+        <div className="hidden md:block absolute right-full top-1/2 -translate-y-1/2 mr-4 px-4 py-2 bg-[#13131a] border border-white/10 rounded-xl opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 whitespace-nowrap shadow-xl">
           <span className="text-sm font-medium text-gray-200">
             {locale === "uk" ? "Switch to English" : "Перемкнути на українську"}
           </span>

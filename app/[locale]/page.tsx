@@ -5,6 +5,9 @@ import { LanguagePicker } from "@/components/ui/LanguagePicker";
 import { Hero } from "@/components/Hero";
 import { Footer } from "@/components/Footer";
 import { About } from "@/components/About";
+import { Skills } from "@/components/Skills";
+import { Contact } from "@/components/ContactForm";
+
 
 const EnhancedBackground = dynamic(
   () =>
@@ -22,6 +25,8 @@ export default function Home() {
       <main className="flex min-h-screen flex-col items-center justify-between">
         <Hero />
         <About />
+        <Skills />
+        <Contact/>
       </main>
       <Footer/>
     </div>

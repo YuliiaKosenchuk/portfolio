@@ -89,35 +89,50 @@ export function EnhancedBackground() {
         const currentSize = p.size + pulse * 0.5;
         const currentOpacity = p.opacity + pulse * 0.15;
 
-        // Glow ефект для великих частинок
-        if (p.size > 1.8) {
-          ctx.beginPath();
-          const glow = ctx.createRadialGradient(
-            p.x,
-            p.y,
-            0,
-            p.x,
-            p.y,
-            currentSize * 4,
-          );
-          glow.addColorStop(
-            0,
-            `rgba(${PARTICLE_COLOR}, ${currentOpacity * 0.4})`,
-          );
-          glow.addColorStop(1, `rgba(${PARTICLE_COLOR}, 0)`);
-          ctx.arc(p.x, p.y, currentSize * 4, 0, Math.PI * 2);
-          ctx.fillStyle = glow;
-          ctx.fill();
-        }
+      //   // Glow ефект для великих частинок
+      //   if (p.size > 1.8) {
+      //     ctx.beginPath();
+      //     const glow = ctx.createRadialGradient(
+      //       p.x,
+      //       p.y,
+      //       0,
+      //       p.x,
+      //       p.y,
+      //       currentSize * 4,
+      //     );
+      //     glow.addColorStop(
+      //       0,
+      //       `rgba(${PARTICLE_COLOR}, ${currentOpacity * 0.4})`,
+      //     );
+      //     glow.addColorStop(1, `rgba(${PARTICLE_COLOR}, 0)`);
+      //     ctx.arc(p.x, p.y, currentSize * 4, 0, Math.PI * 2);
+      //     ctx.fillStyle = glow;
+      //     ctx.fill();
+      //   }
 
-        // Сама частинка
+      //   // Сама частинка
+      //   ctx.beginPath();
+      //   ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
+      //   ctx.fillStyle = `rgba(${PARTICLE_COLOR}, ${currentOpacity})`;
+      //   ctx.fill();
+        // });
+        
         ctx.beginPath();
         ctx.arc(p.x, p.y, currentSize, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${PARTICLE_COLOR}, ${currentOpacity})`;
+        
+        if (p.size > 1.8) {
+          ctx.shadowBlur = 15;
+          ctx.shadowColor = `rgba(${PARTICLE_COLOR}, 0.5)`;
+        } else {
+          ctx.shadowBlur = 0;
+        }
         ctx.fill();
+        ctx.shadowBlur = 0; // скидаємо тінь для інших елементів
       });
 
-      // ── З'єднуючі лінії — кожен 2-й кадр для оптимізації ──
+      // ── З'єднуючі лінії ──
+      ctx.lineWidth = 1; // Задаємо товщину один раз поза циклом
 
       for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
@@ -130,17 +145,18 @@ export function EnhancedBackground() {
           if (dist < CONNECTION_DISTANCE) {
             const alpha = (1 - dist / CONNECTION_DISTANCE) * 0.6; // ← чіткіші лінії
 
-            // Градієнтна лінія
-            const gradient = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
-            gradient.addColorStop(0, `rgba(${PARTICLE_COLOR}, ${alpha})`);
-            gradient.addColorStop(0.5, `rgba(${LINE_COLOR}, ${alpha * 1.2})`);
-            gradient.addColorStop(1, `rgba(${PARTICLE_COLOR}, ${alpha})`);
+            // // Градієнтна лінія
+            // const gradient = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+            // gradient.addColorStop(0, `rgba(${PARTICLE_COLOR}, ${alpha})`);
+            // gradient.addColorStop(0.5, `rgba(${LINE_COLOR}, ${alpha * 1.2})`);
+            // gradient.addColorStop(1, `rgba(${PARTICLE_COLOR}, ${alpha})`);
 
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = gradient;
-            ctx.lineWidth = alpha * 1.5; // ← товщина залежить від відстані
+            // ctx.strokeStyle = gradient;
+            ctx.strokeStyle = `rgba(${LINE_COLOR}, ${alpha})`;ctx.strokeStyle = `rgba(${LINE_COLOR}, ${alpha})`;
+            // ctx.lineWidth = alpha * 1.5; // ← товщина залежить від відстані
             ctx.stroke();
           }
         }
@@ -193,12 +209,12 @@ export function EnhancedBackground() {
       />
 
       {/* Orbs */}
-      <div className="orb absolute -top-40 -left-40 w-150 h-150 bg-linear-to-br from-indigo-600/30 to-purple-600/30 rounded-full blur-3xl" />
-      <div className="orb absolute top-1/4 -right-20 w-125 h-125 bg-linear-to-br from-purple-600/30 to-pink-600/30 rounded-full blur-3xl" />
-      <div className="orb absolute -bottom-40 left-1/4 w-175 h-175 bg-linear-to-br from-pink-600/20 to-indigo-600/20 rounded-full blur-3xl" />
-      <div className="orb absolute bottom-1/3 right-1/4 w-100 h-100 bg-linear-to-br from-cyan-600/25 to-blue-600/25 rounded-full blur-3xl" />
+      <div className="orb absolute -top-40 -left-40 w-150 h-150 bg-linear-to-br from-indigo-600/30 to-purple-600/30 rounded-full blur-3xl will-change-transform" style={{ transform: 'translateZ(0)' }} />
+      <div className="orb absolute top-1/4 -right-20 w-125 h-125 bg-linear-to-br from-purple-600/30 to-pink-600/30 rounded-full blur-3xl will-change-transform" style={{ transform: 'translateZ(0)' }} />
+      <div className="orb absolute -bottom-40 left-1/4 w-175 h-175 bg-linear-to-br from-pink-600/20 to-indigo-600/20 rounded-full blur-3xl will-change-transform" style={{ transform: 'translateZ(0)' }} />
+      <div className="orb absolute bottom-1/3 right-1/4 w-100 h-100 bg-linear-to-br from-cyan-600/25 to-blue-600/25 rounded-full blur-3xl will-change-transform" style={{ transform: 'translateZ(0)' }} />
       {/* Новий orb */}
-      <div className="orb absolute top-1/2 left-1/2 w-80 h-80 bg-linear-to-br from-violet-600/15 to-fuchsia-600/15 rounded-full blur-3xl" />
+      <div className="orb absolute top-1/2 left-1/2 w-80 h-80 bg-linear-to-br from-violet-600/15 to-fuchsia-600/15 rounded-full blur-3xl will-change-transform" style={{ transform: 'translateZ(0)' }} />
 
       {/* Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.03)_1px,transparent_1px)] bg-size-[50px_50px] mask-[radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]" />
