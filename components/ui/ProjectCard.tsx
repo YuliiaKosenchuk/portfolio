@@ -1,7 +1,7 @@
 "use client";
 import { Project } from "@/types/project";
 import Image from "next/image";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { ExternalLink } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -12,53 +12,56 @@ export function ProjectCard({
   project: Project;
   index: number;
 }) {
+  const [isHovered, setIsHovered] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const t = useTranslations("Projects");
 
-  useEffect(() => {
-    const video = videoRef.current;
-    if (!video) return;
+  // useEffect(() => {
+  //   const video = videoRef.current;
+  //   if (!video) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          if (!video.src || !video.src.includes(project.video)) {
-            video.src = project.video;
-          }
-        } else {
-          if (!video.paused) {
-            video.pause();
-          }
-          video.currentTime = 0;
-        }
-      },
-      { threshold: 0.4 },
-    );
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => {
+  //       if (entry.isIntersecting) {
+  //         if (!video.src || !video.src.includes(project.video)) {
+  //           video.src = project.video;
+  //         }
+  //       } else {
+  //         if (!video.paused) {
+  //           video.pause();
+  //         }
+  //         video.currentTime = 0;
+  //       }
+  //     },
+  //     { threshold: 0.4 },
+  //   );
 
-    observer.observe(video);
-    return () => observer.disconnect();
-  }, [project.video]);
+  //   observer.observe(video);
+  //   return () => observer.disconnect();
+  // }, [project.video]);
 
   return (
     <div
       key={index}
-      onMouseEnter={() => {
-        const video = videoRef.current;
-        if (!video) return;
+      // onMouseEnter={() => {
+      //   const video = videoRef.current;
+      //   if (!video) return;
 
-        if (!video.src || !video.src.includes(project.video)) {
-          video.src = project.video;
-        }
+      //   if (!video.src || !video.src.includes(project.video)) {
+      //     video.src = project.video;
+      //   }
 
-        video.play().catch(() => {});
-      }}
-      onMouseLeave={() => {
-        const video = videoRef.current;
-        if (!video) return;
+      //   video.play().catch(() => {});
+      // }}
+      // onMouseLeave={() => {
+      //   const video = videoRef.current;
+      //   if (!video) return;
 
-        video.pause();
-        video.currentTime = 0;
-      }}
+      //   video.pause();
+      //   video.currentTime = 0;
+      // }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={`flex flex-col md:h-133 ${
         index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
       } group relative rounded-3xl bg-[#13131a]/80 border border-white/10 hover:border-indigo-500/30 transition-colors duration-500 overflow-hidden shadow-xl shadow-black/20`}
@@ -66,15 +69,19 @@ export function ProjectCard({
       <div className="absolute inset-0 bg-linear-to-br from-indigo-500/5 via-transparent to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-0"></div>
 
       <div className="w-full h-72 md:h-full md:w-1/2 overflow-hidden relative z-10 border-b md:border-b-0 md:border-r border-white/10">
-        <div className="absolute inset-0 bg-linear-to-t from-[#0a0a0f] to-transparent z-10 opacity-0 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none"></div>
+        {/* <div className="absolute inset-0 bg-linear-to-t from-[#0a0a0f] to-transparent z-10 opacity-0 group-hover:opacity-60 transition-opacity duration-500 pointer-events-none"></div> */}
         <Image
           src={project.poster}
           alt={project.title}
           width={600}
           height={400}
-          className="absolute inset-0 w-full h-full object-cover object-top z-10 transition-opacity duration-700 group-hover:opacity-0"
+          priority={index < 2}
+          className={`absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-700 ${
+    isHovered ? "opacity-0 z-0" : "opacity-100 z-10"
+  }`}
+          // className="absolute inset-0 w-full h-full object-cover object-top z-10 transition-opacity duration-700 group-hover:opacity-0"
         />
-        <video
+        {/* <video
           ref={videoRef}
           data-src={project.video}
           className="absolute inset-0 w-full h-full object-cover object-top"
@@ -83,7 +90,18 @@ export function ProjectCard({
           playsInline
           preload="none"
           poster={project.poster}
-        />
+        /> */}
+        {isHovered && (
+          <video
+            ref={videoRef}
+            src={project.video}
+            className="absolute inset-0 w-full h-full object-cover object-top z-0"
+            muted
+            loop
+            playsInline
+            autoPlay
+          />
+        )}
       </div>
 
       <div className="md:w-1/2 p-6 lg:p-12 flex flex-col justify-center relative z-10">

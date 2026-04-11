@@ -195,7 +195,7 @@ export function Contact() {
       <div className="container mx-auto px-6 max-w-6xl md:pr-28 min-[1350px]:pr-0!">
         <h2
           ref={titleRef}
-          className="text-4xl md:text-6xl text-center mb-12 text-white"
+          className="text-4xl md:text-6xl text-center mb-6 text-white"
         >
           {t("title1")}{" "}
           <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-400 to-pink-400">
