@@ -4,7 +4,7 @@ export function Footer() {
   const t = useTranslations("Footer");
   
   return (
-    <footer className="py-12 bg-white/5 border-t border-white/10 relative backdrop-blur-sm">
+    <footer className="py-12 bg-secondary/30 border-t border-white/10 relative backdrop-blur-sm">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-col items-start gap-4 text-center">

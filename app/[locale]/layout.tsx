@@ -36,7 +36,7 @@ export default async function RootLayout(props: {
   const messages = await getMessages({ locale });
 
   return (
-    <html lang={locale} className="dark" suppressHydrationWarning>
+    <html lang={locale} className="dark" data-scroll-behavior="smooth" suppressHydrationWarning>
       <body
         key={locale}
         className={`${montserrat.variable} font-sans antialiased`}
@@ -44,7 +44,9 @@ export default async function RootLayout(props: {
         <NextIntlClientProvider locale={locale} messages={messages}>
           <FloatingNav />
           <ScrollProgress />
-          <SmoothScroll>{props.children}</SmoothScroll>
+          {/* <SmoothScroll> */}
+            {props.children}
+          {/* </SmoothScroll> */}
         </NextIntlClientProvider>
       </body>
     </html>

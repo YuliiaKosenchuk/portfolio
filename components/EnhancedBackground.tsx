@@ -64,7 +64,12 @@ function getNeighbors(grid: SpatialGrid, p: Particle): Particle[] {
   return result;
 }
 
-function drawCross(ctx: CanvasRenderingContext2D, x: number, y: number, size: number) {
+function drawCross(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  size: number,
+) {
   const s = size * 1.8;
   ctx.moveTo(x - s, y);
   ctx.lineTo(x + s, y);
@@ -72,7 +77,12 @@ function drawCross(ctx: CanvasRenderingContext2D, x: number, y: number, size: nu
   ctx.lineTo(x, y + s);
 }
 
-function drawDiamond(ctx: CanvasRenderingContext2D, x: number, y: number, size: number) {
+function drawDiamond(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  size: number,
+) {
   const s = size * 2;
   ctx.moveTo(x, y - s);
   ctx.lineTo(x + s * 0.6, y);
@@ -103,7 +113,10 @@ export function EnhancedBackground() {
 
     drawHexGrid(hexCtx, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    const particles: Particle[] = Array.from({ length: PARTICLE_COUNT }, createParticle);
+    const particles: Particle[] = Array.from(
+      { length: PARTICLE_COUNT },
+      createParticle,
+    );
 
     requestAnimationFrame(() => {
       canvas.style.opacity = "1";
@@ -138,9 +151,10 @@ export function EnhancedBackground() {
         for (const p2 of neighbors) {
           if (p1 === p2) continue;
           // Уникаємо дублювання пар
-          const pairKey = p1.x < p2.x
-            ? `${p1.x},${p1.y}-${p2.x},${p2.y}`
-            : `${p2.x},${p2.y}-${p1.x},${p1.y}`;
+          const pairKey =
+            p1.x < p2.x
+              ? `${p1.x},${p1.y}-${p2.x},${p2.y}`
+              : `${p2.x},${p2.y}-${p1.x},${p1.y}`;
           if (drawn.has(pairKey)) continue;
           drawn.add(pairKey);
 
@@ -199,38 +213,38 @@ export function EnhancedBackground() {
   }, []);
 
   useGSAP(
-  () => {
-    const orbs = containerRef.current?.querySelectorAll(".orb");
-    if (!orbs) return;
+    () => {
+      const orbs = containerRef.current?.querySelectorAll(".orb");
+      if (!orbs) return;
 
-    // Кожному орбу — унікальні параметри синусоїди
-    const orbData = Array.from(orbs).map(() => ({
-      // Радіус плавання по X і Y незалежно
-      rx: gsap.utils.random(60, 140),
-      ry: gsap.utils.random(50, 120),
-      // Швидкість по X і Y різна → еліптична траєкторія
-      speedX: gsap.utils.random(0.00018, 0.00032),
-      speedY: gsap.utils.random(0.00014, 0.00026),
-      // Зсув фази щоб орби не рухались синхронно
-      phaseX: Math.random() * Math.PI * 2,
-      phaseY: Math.random() * Math.PI * 2,
-    }));
+      // Кожному орбу — унікальні параметри синусоїди
+      const orbData = Array.from(orbs).map(() => ({
+        // Радіус плавання по X і Y незалежно
+        rx: gsap.utils.random(60, 140),
+        ry: gsap.utils.random(50, 120),
+        // Швидкість по X і Y різна → еліптична траєкторія
+        speedX: gsap.utils.random(0.00018, 0.00032),
+        speedY: gsap.utils.random(0.00014, 0.00026),
+        // Зсув фази щоб орби не рухались синхронно
+        phaseX: Math.random() * Math.PI * 2,
+        phaseY: Math.random() * Math.PI * 2,
+      }));
 
-    const floatFn = () => {
-      const now = performance.now();
-      orbs.forEach((orb, i) => {
-        const d = orbData[i];
-        const x = Math.sin(now * d.speedX + d.phaseX) * d.rx;
-        const y = Math.cos(now * d.speedY + d.phaseY) * d.ry;
-        gsap.set(orb, { x, y });
-      });
-    };
+      const floatFn = () => {
+        const now = performance.now();
+        orbs.forEach((orb, i) => {
+          const d = orbData[i];
+          const x = Math.sin(now * d.speedX + d.phaseX) * d.rx;
+          const y = Math.cos(now * d.speedY + d.phaseY) * d.ry;
+          gsap.set(orb, { x, y });
+        });
+      };
 
-    gsap.ticker.add(floatFn);
-    return () => gsap.ticker.remove(floatFn);
-  },
-  { scope: containerRef },
-);
+      gsap.ticker.add(floatFn);
+      return () => gsap.ticker.remove(floatFn);
+    },
+    { scope: containerRef },
+  );
 
   return (
     <div
@@ -278,6 +292,10 @@ export function EnhancedBackground() {
           transform: "translateZ(0)",
         }}
       />
+      {/* <div className="orb absolute -top-40 -left-40 w-[600px] h-[600px] bg-gradient-to-br from-indigo-600/30 to-purple-600/30 rounded-full blur-3xl"></div>
+      <div className="orb absolute top-1/4 -right-20 w-[500px] h-[500px] bg-gradient-to-br from-purple-600/30 to-pink-600/30 rounded-full blur-3xl"></div>
+      <div className="orb absolute -bottom-40 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-pink-600/20 to-indigo-600/20 rounded-full blur-3xl"></div>
+      <div className="orb absolute bottom-1/3 right-1/4 w-[400px] h-[400px] bg-gradient-to-br from-cyan-600/25 to-blue-600/25 rounded-full blur-3xl"></div> */}
 
       {/* Grid */}
       <div className="absolute inset-0 bg-[linear-gradient(rgba(99,102,241,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(99,102,241,0.03)_1px,transparent_1px)] bg-size-[50px_50px] mask-[radial-gradient(ellipse_80%_50%_at_50%_50%,black,transparent)]" />

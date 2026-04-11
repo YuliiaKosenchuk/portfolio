@@ -88,5 +88,34 @@
     "text1": "Built with",
     "text2": "Crafted with",
     "text3": "fueled by"
+  },
+
+  
+  "Projects": {
+    "title1": "Things",
+    "title2": "I’ve Built",
+    "subtitle": "A selection of projects showcasing my skills, creativity, and approach to building modern web applications",
+    "demoBtn": "Demo",
+    "gadgets": {
+      "title": "Electronics Store",
+      "description": "A modern e-commerce application for browsing phones, tablets, and accessories. Features include a shopping cart, favorites, theme switching, and multi-language support."
+    },
+    "air": {
+      "title": "Creative Landing Page",
+      "description": "A modern, visually rich landing page with smooth animations, interactive background effects, and responsive design."
+    },
+    "game2048": {
+      "title": "2048 Game",
+      "description": "A browser-based implementation of the classic 2048 puzzle game with smooth controls, score tracking, and clean UI."
+    },
+    "nothing": {
+      "title": "Nothing Landing Page",
+      "description": "A minimalist, high-performance landing page built with HTML, SCSS, and JavaScript, featuring responsive design and clean UI."
+    },
+    "travel": {
+      "title": "Travel Landing Page",
+      "description": "A clean and responsive landing page built with HTML, CSS, and JavaScript, featuring modern layout techniques and semantic structure."
+    }
   }
 }
+

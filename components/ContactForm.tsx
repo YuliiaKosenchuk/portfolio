@@ -42,12 +42,12 @@ export function Contact() {
       gsap.from(titleRef.current, {
         scrollTrigger: {
           trigger: titleRef.current,
-          start: "top 80%",
+          start: "top 90%",
           toggleActions: "play none none none",
         },
-        y: 40,
+        y: 30,
         opacity: 0,
-        duration: 0.8,
+        duration: 0.7,
         ease: "power3.out",
       });
       gsap.from(formRef.current, {

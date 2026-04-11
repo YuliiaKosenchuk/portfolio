@@ -13,17 +13,17 @@ export function LanguagePicker() {
   const locale = params.locale as string;
   const pickerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const savedScroll = sessionStorage.getItem("scrollPosition");
-    if (savedScroll) {
-    const timer = setTimeout(() => {
-      window.scrollTo({ top: Number(savedScroll), behavior: 'smooth' });
-      sessionStorage.removeItem('scrollPosition');
-    }, 500); // ← підбери під анімацію: 300-600ms
+//   useEffect(() => {
+//     const savedScroll = sessionStorage.getItem("scrollPosition");
+//     if (savedScroll) {
+//     const timer = setTimeout(() => {
+//       window.scrollTo({ top: Number(savedScroll), behavior: 'smooth' });
+//       sessionStorage.removeItem('scrollPosition');
+//     }, 500); // ← підбери під анімацію: 300-600ms
 
-    return () => clearTimeout(timer);
-  }
-}, []);
+//     return () => clearTimeout(timer);
+//   }
+// }, []);
 
   useEffect(() => {
     gsap.fromTo(
@@ -40,7 +40,7 @@ export function LanguagePicker() {
   }, []);
 
   const toggleLanguage = () => {
-    sessionStorage.setItem("scrollPosition", String(window.scrollY));
+    // sessionStorage.setItem("scrollPosition", String(window.scrollY));
     const nextLocale = locale === "uk" ? "en" : "uk";
     router.replace(pathname, { locale: nextLocale });
   };
