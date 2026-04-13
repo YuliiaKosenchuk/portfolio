@@ -225,8 +225,9 @@ export function EnhancedBackground() {
       }
 
       // Прохід 3: великі кола (з тінню) — їх мало, shadow дорогий лише тут
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = `rgba(${PARTICLE_COLOR}, 0.4)`;
+      ctx.shadowBlur = dpr > 1 ? 0 : 10;
+      ctx.shadowColor =
+        dpr > 1 ? "transparent" : `rgba(${PARTICLE_COLOR}, 0.4)`;
       for (const p of particles) {
         if (p.type !== 0 || p.size <= 1.8) continue;
         const pulse = Math.sin(frame * p.pulseSpeed + p.pulseOffset);

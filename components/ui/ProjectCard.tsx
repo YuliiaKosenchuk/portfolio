@@ -69,7 +69,7 @@ function VideoModal({ src, onClose }: { src: string; onClose: () => void }) {
             loop
             autoPlay
             muted
-            preload="auto"
+            preload="none"
           />
         </div>
       </div>
