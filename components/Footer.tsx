@@ -5,7 +5,7 @@ export function Footer() {
   
   return (
     <footer className="py-12 bg-secondary/30 border-t border-white/10 relative backdrop-blur-sm">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto max-w-6xl px-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex flex-col items-start gap-4 text-left md:text-center">
             <p className="text-gray-400 flex flex-wrap items-start justify-start gap-1.5 text-sm md:text-base">

@@ -63,7 +63,12 @@ function getNeighbors(grid: SpatialGrid, p: Particle): Particle[] {
   return result;
 }
 
-function drawCross(ctx: CanvasRenderingContext2D, x: number, y: number, size: number) {
+function drawCross(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  size: number,
+) {
   const s = size * 1.8;
   ctx.moveTo(x - s, y);
   ctx.lineTo(x + s, y);
@@ -71,7 +76,12 @@ function drawCross(ctx: CanvasRenderingContext2D, x: number, y: number, size: nu
   ctx.lineTo(x, y + s);
 }
 
-function drawDiamond(ctx: CanvasRenderingContext2D, x: number, y: number, size: number) {
+function drawDiamond(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  size: number,
+) {
   const s = size * 2;
   ctx.moveTo(x, y - s);
   ctx.lineTo(x + s * 0.6, y);
@@ -97,18 +107,27 @@ export function EnhancedBackground() {
 
     // ✅ 1. Реальний розмір canvas через devicePixelRatio
     const dpr = Math.min(window.devicePixelRatio, 2);
-    const W = window.innerWidth * dpr;
-    const H = window.innerHeight * dpr;
+    // const W = window.innerWidth * dpr;
+    // const H = window.innerHeight * dpr;
+    const W = window.innerWidth;
+    const H = window.innerHeight;
 
-    canvas.width = W;
-    canvas.height = H;
+    // canvas.width = W;
+    // canvas.height = H;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
     canvas.style.width = "100%";
     canvas.style.height = "100%";
 
-    hexCanvas.width = W;
-    hexCanvas.height = H;
+    // hexCanvas.width = W;
+    // hexCanvas.height = H;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
     hexCanvas.style.width = "100%";
     hexCanvas.style.height = "100%";
+
+    ctx.scale(dpr, dpr);
+    hexCtx.scale(dpr, dpr);
 
     drawHexGrid(hexCtx, W, H);
 
@@ -141,7 +160,8 @@ export function EnhancedBackground() {
       const grid = buildGrid(particles);
 
       // ── З'єднуючі лінії ──
-      ctx.lineWidth = 0.8;
+      // ctx.lineWidth = 1.0;
+      ctx.lineWidth = dpr > 1 ? 0.6 : 0.8;
 
       // ✅ 2. Set<number> замість Set<string> із float-рядків
       const drawn = new Set<number>();
@@ -161,7 +181,10 @@ export function EnhancedBackground() {
           const dy = p1.y - p2.y;
           const distSq = dx * dx + dy * dy;
           if (distSq < CONNECTION_DISTANCE * CONNECTION_DISTANCE) {
-            const alpha = (1 - Math.sqrt(distSq) / CONNECTION_DISTANCE) * 0.75;
+            // const alpha = (1 - Math.sqrt(distSq) / CONNECTION_DISTANCE) * 0.75;
+            const alpha =
+              (1 - Math.sqrt(distSq) / CONNECTION_DISTANCE) *
+              (dpr > 1 ? 0.8 : 0.75);
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
@@ -286,28 +309,32 @@ export function EnhancedBackground() {
       <div
         className="orb absolute -top-40 -left-40 w-150 h-150 will-change-transform"
         style={{
-          background: "radial-gradient(circle, rgba(79,70,229,0.2) 0%, rgba(147,51,234,0.08) 55%, transparent 75%)",
+          background:
+            "radial-gradient(circle, rgba(79,70,229,0.2) 0%, rgba(147,51,234,0.08) 55%, transparent 75%)",
           transform: "translateZ(0)",
         }}
       />
       <div
         className="orb absolute top-1/4 -right-20 w-125 h-125 will-change-transform"
         style={{
-          background: "radial-gradient(circle, rgba(147,51,234,0.18) 0%, rgba(219,39,119,0.07) 55%, transparent 75%)",
+          background:
+            "radial-gradient(circle, rgba(147,51,234,0.18) 0%, rgba(219,39,119,0.07) 55%, transparent 75%)",
           transform: "translateZ(0)",
         }}
       />
       <div
         className="orb absolute -bottom-40 left-1/4 w-175 h-175 will-change-transform"
         style={{
-          background: "radial-gradient(circle, rgba(219,39,119,0.12) 0%, rgba(79,70,229,0.06) 55%, transparent 75%)",
+          background:
+            "radial-gradient(circle, rgba(219,39,119,0.12) 0%, rgba(79,70,229,0.06) 55%, transparent 75%)",
           transform: "translateZ(0)",
         }}
       />
       <div
         className="orb absolute bottom-1/3 right-1/4 w-100 h-100 will-change-transform"
         style={{
-          background: "radial-gradient(circle, rgba(8,145,178,0.15) 0%, rgba(37,99,235,0.06) 55%, transparent 75%)",
+          background:
+            "radial-gradient(circle, rgba(8,145,178,0.15) 0%, rgba(37,99,235,0.06) 55%, transparent 75%)",
           transform: "translateZ(0)",
         }}
       />
@@ -318,7 +345,11 @@ export function EnhancedBackground() {
   );
 }
 
-function drawHexGrid(ctx: CanvasRenderingContext2D, width: number, height: number) {
+function drawHexGrid(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+) {
   const size = 40;
   const h = size * Math.sqrt(3);
   ctx.lineWidth = 0.3;
