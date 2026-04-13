@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -9,6 +9,22 @@ import { ProjectCard } from "@/components/ui/ProjectCard";
 import { useTranslations } from "next-intl";
 
 gsap.registerPlugin(ScrollTrigger);
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(max-width: 767px)").matches;
+  });
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)");
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+
+  return isMobile;
+}
 
 type ProjectsProps = {
   projects: Project[];
@@ -19,38 +35,36 @@ export function Projects({ projects }: ProjectsProps) {
   const headerRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("Projects");
+  const isMobile = useIsMobile();
 
   useGSAP(
     () => {
-      const triggerDefaults = {
-        toggleActions: "play none none none",
-        once: true,
-      };
-
       const cards = projectsRef.current?.children || [];
 
-    // 1. ОДРАЗУ ховаємо картки до того, як користувач їх побачить
-    gsap.set(cards, { opacity: 0, y: 40 });
+      gsap.set(cards, { opacity: 0, y: 40 });
 
-    // 2. Анімуємо їх появу (gsap.to замість gsap.from)
-    ScrollTrigger.batch(cards, {
-      start: "top 85%",
-      once: true,
-      onEnter: (batch) =>
-        gsap.to(batch, {
-          y: 0, // повертаємо на нульову позицію
-          opacity: 1, // робимо видимими
-          duration: 0.6,
-          ease: "power2.out",
-          stagger: 0.15,
-        }),
-    });
+      ScrollTrigger.batch(cards, {
+        start: "top 85%",
+        once: true,
+        onEnter: (batch) => {
+          gsap.set(batch, { willChange: "transform, opacity" });
+          gsap.to(batch, {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            ease: "power2.out",
+            stagger: 0.15,
+            onComplete: () => { gsap.set(batch, { clearProps: "willChange" }) },
+          });
+        },
+      });
 
       gsap.from(headerRef.current?.children || [], {
         scrollTrigger: {
           trigger: headerRef.current,
           start: "top 90%",
-          ...triggerDefaults,
+          toggleActions: "play none none none",
+          once: true,
         },
         y: 30,
         opacity: 0,
@@ -59,49 +73,27 @@ export function Projects({ projects }: ProjectsProps) {
         ease: "power2.out",
       });
 
-      // gsap.utils.toArray<Element>(projectsRef.current?.children || []).forEach((card) => {
-      //   gsap.from(card, {
-      //     scrollTrigger: {
-      //       trigger: card,
-      //       start: "top 85%",
-      //       ...triggerDefaults,
-      //     },
-      //     y: 40,
-      //     opacity: 0,
-      //     duration: 0.6,
-      //     ease: "power2.out",
-      //   });
-      // });
-      // ScrollTrigger.batch(projectsRef.current?.children || [], {
-      //   start: "top 85%",
-      //   once: true,
-      //   onEnter: (batch) =>
-      //     gsap.from(batch, {
-      //       y: 40,
-      //       opacity: 0,
-      //       duration: 0.6,
-      //       ease: "power2.out",
-      //       stagger: 0.15,
-      //     }),
-      // });
+      ScrollTrigger.refresh();
+      return () => ScrollTrigger.getAll().forEach((t) => t.kill());
     },
     { scope: sectionRef },
   );
 
   const translatedProjects = useMemo(
-  () =>
-    projects.map((project) => ({
-      ...project,
-      title: t(`${project.key}.title`),
-      description: t(`${project.key}.description`),
-    })),
-  [projects, t],
-);
+    () =>
+      projects.map((project) => ({
+        ...project,
+        title: t(`${project.key}.title`),
+        description: t(`${project.key}.description`),
+      })),
+    [projects, t],
+  );
+
   return (
     <section
       id="projects"
       ref={sectionRef}
-      className=" w-full py-20 bg-secondary/30 relative overflow-hidden"
+      className="w-full py-20 bg-secondary/30 relative"
     >
       <div className="container px-6 max-w-6xl mx-auto md:pr-28 min-[1350px]:pr-0!">
         <div ref={headerRef} className="max-w-3xl mx-auto text-center mb-16">
@@ -118,7 +110,12 @@ export function Projects({ projects }: ProjectsProps) {
 
         <div ref={projectsRef} className="space-y-12">
           {translatedProjects.map((project, index) => (
-            <ProjectCard key={project.key} project={project} index={index} />
+            <ProjectCard
+              key={project.key}
+              project={project}
+              index={index}
+              isMobile={isMobile}
+            />
           ))}
         </div>
       </div>

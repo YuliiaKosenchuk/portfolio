@@ -9,6 +9,7 @@ import { Skills } from "@/components/Skills";
 import { Contact } from "@/components/ContactForm";
 import { Projects } from "@/components/Projects";
 import { projects } from "@/data/projects";
+import { Experience } from "@/components/Experience";
 
 
 const EnhancedBackground = dynamic(
@@ -28,6 +29,7 @@ export default function Home() {
         <Hero />
         <About />
         <Skills />
+        <Experience/>
         <Projects projects={projects}/>
         <Contact/>
       </main>

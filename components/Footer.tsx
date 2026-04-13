@@ -5,10 +5,10 @@ export function Footer() {
   
   return (
     <footer className="py-12 bg-secondary/30 border-t border-white/10 relative backdrop-blur-sm">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex flex-col items-start gap-4 text-center">
-            <p className="text-gray-400 flex flex-wrap items-center justify-center gap-1.5 text-sm md:text-base">
+      <div className="container mx-auto px-6">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex flex-col items-start gap-4 text-left md:text-center">
+            <p className="text-gray-400 flex flex-wrap items-start justify-start gap-1.5 text-sm md:text-base">
               <span>© {new Date().getFullYear()}</span>
               <span className="font-bold text-transparent bg-clip-text bg-linear-to-r from-indigo-400 via-purple-400 to-pink-400">
                 Yuliia Kosenchuk
@@ -26,7 +26,7 @@ export function Footer() {
               </span>
             </p>
 
-            <p className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-gray-500">
+            <p className="flex items-start justify-start sm:items-start gap-2 text-xs uppercase tracking-[0.2em] text-gray-500">
               <span>{t("text2")}</span>
               <span className="animate-pulse text-pink-500">❤️</span>
               <span>{t("text3")}</span>

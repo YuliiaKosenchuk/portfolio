@@ -68,7 +68,7 @@
       "emailPlaceholder": "Your email",
       "emailError1": "Email is required",
       "emailError2": "Please enter a valid email",
-       "messageError1": "Message is required",
+      "messageError1": "Message is required",
       "messageError2": "Message must be at least 10 characters long",
       "messagePlaceholder": "Your message",
       "submit": "Send Message",
@@ -90,15 +90,15 @@
     "text3": "fueled by"
   },
 
-  
   "Projects": {
     "title1": "Things",
     "title2": "I’ve Built",
     "subtitle": "A selection of projects showcasing my skills, creativity, and approach to building modern web applications",
     "demoBtn": "Demo",
+    "previewBtn": "View preview",
     "gadgets": {
       "title": "Electronics Store",
-      "description": "A modern e-commerce application for browsing phones, tablets, and accessories. Features include a shopping cart, favorites, theme switching, and multi-language support."
+      "description": "E-commerce application for phones, tablets, and accessories, include a shopping cart, favorites, theme switching, and multi-language support."
     },
     "air": {
       "title": "Creative Landing Page",
@@ -116,6 +116,26 @@
       "title": "Travel Landing Page",
       "description": "A clean and responsive landing page built with HTML, CSS, and JavaScript, featuring modern layout techniques and semantic structure."
     }
+  },
+
+  "Experience": {
+    "title1": "Work",
+    "title2": "Experience",
+    "frontend": {
+      "description": "Development of cross-browser responsive websites and applications.",
+      "achievements": [
+        "Designing the frontend architecture for projects.",
+        "Implementing translations and themes",
+        "Optimizing animations by 30%"
+      ]
+    },
+    "test": {
+      "description": "Real-time testing of a mobile app during development, from start to release",
+      "achievements": [
+        "IIncreased the processing capacity for customer requests by 50%",
+        "Optimized the administrative section of the app for doctors",
+        "Tested the entire process, from consultation to final diagnosis."
+      ]
+    }
   }
 }
-
